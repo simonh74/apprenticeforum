@@ -12,18 +12,44 @@
 <body>
 <h1>Hello, world!</h1>
 
-<div class="row my-5">
-    <div class="col">
-        <div class="card bg-secondary mb-3" style="max-width: 20rem;">
-            <!--<div class="card-header">Header</div>-->
-            <div class="card-body">
-                <h4 class="card-title">Login</h4>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                    the card's content.</p>
+<section id="card" class="py-5">
+    <div class="container aos-init aos-animate" data-aos="fade-right">
+        <div class="row my-5">
+
+            <div class="col">
+                <center>
+                    <form>
+                        <fieldset>
+                            <div class="card bg-secondary mb-1" style="max-width: 30rem;">
+                                <!--<div class="card-header">Header</div>-->
+                                <div class="card-body">
+                                    <h4 class="card-title">Login</h4>
+                                    <div>
+                                        <div class="form-group">
+                                            <label for="inputEmail">Email address</label>
+                                            <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter email">
+                                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                                                else.
+                                            </small>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputPassword">Password</label>
+                                            <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                                        </div>
+                                    </div>
+                                    <!--<p class="card-text">test</p>-->
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </fieldset>
+                    </form>
+                </center>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
