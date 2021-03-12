@@ -65,6 +65,22 @@ public class User
 
     @Getter
     @Setter
+    @JoinTable(name = "DOWNVOTES_USER_POST", joinColumns = {
+            @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)}, inverseJoinColumns = {
+            @JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false)})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    public Set<Post> downvoted_posts;
+
+    @Getter
+    @Setter
+    @JoinTable(name = "UPVOTES_USER_POST", joinColumns = {
+            @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)}, inverseJoinColumns = {
+            @JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false)})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    public Set<Post> upvoted_posts;
+
+    @Getter
+    @Setter
     @ManyToMany(mappedBy = "discussionmembers")
     private Collection<Discussion> memberofdiscussion;
 

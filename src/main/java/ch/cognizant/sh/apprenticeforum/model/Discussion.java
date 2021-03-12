@@ -30,8 +30,9 @@ public class Discussion
     @Getter
     @Setter
     @OneToMany(mappedBy = "posted_in_discussion", cascade = { CascadeType.MERGE, CascadeType.REMOVE,
-        CascadeType.REFRESH, CascadeType.DETACH }, orphanRemoval = true, fetch = FetchType.EAGER)
+            CascadeType.REFRESH, CascadeType.DETACH }, orphanRemoval = true, fetch = FetchType.EAGER)
     public List<Post> discussionListOfPosts = new ArrayList<>();
+
 
     @Getter
     @Setter

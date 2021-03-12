@@ -29,19 +29,13 @@ public class Post
 
     @Getter
     @Setter
-    @JoinTable(name = "DOWNVOTES_USER_POST", joinColumns = {
-            @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)}, inverseJoinColumns = {
-            @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)})
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    public Set<Role> downvoted_from_users;
+    @ManyToMany(mappedBy = "downvoted_posts", fetch = FetchType.EAGER)
+    public Set<User> downvoted_from_users;
 
     @Getter
     @Setter
-    @JoinTable(name = "UPVOTES_USER_POST", joinColumns = {
-            @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)}, inverseJoinColumns = {
-            @JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false)})
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    public Set<Role> upvoted_from_users;
+    @ManyToMany(mappedBy = "upvoted_posts", fetch = FetchType.EAGER)
+    public Set<User> upvoted_from_users;
 
     @Getter
     @Setter
@@ -53,7 +47,7 @@ public class Post
     @Setter
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "discussion_id", nullable = false)
-    public Discussion posted_in_discussison;
+    public Discussion posted_in_discussion;
 
     public Post() {
         super();
