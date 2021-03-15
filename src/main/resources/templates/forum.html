@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Home</title>
+    <title>Forum - Overview</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://resources.ctsapprentice.ch/css/main/bootstrap.css"/>
@@ -28,7 +28,7 @@
     <div class="collapse navbar-collapse" id="navbarColor02">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Home</a>
+                <a class="nav-link" href="/home">Home</a>
             </li>
             <li class="nav-item active dropdown">
                 <a class="nav-link dropdown-toggle" href="forum" id="forumdropdown" role="button"
@@ -55,19 +55,48 @@
     </div>
 </nav>
 
-<!--content of the homepage-->
-<section id="jumbotron" class="py-5">
+<!--Overview of the forum-->
+<section class="py-5">
     <div class="container aos-init aos-animate" data-aos="fade-right">
-        <div class="row my-5">
-            <div class="col">
-                <div class="jumbotron">
-                    <h1 class="display-3">Welcome</h1>
-                    <p class="lead">to the apprentice forums!</p>
-                    <hr class="my-4">
-                    <p>This forum is a collaborative knowledge platform. In this forum you can ask question to which other apprentices can reply to. Or you can simply leave a comment to discussions to help out other poeple.</p>
-                    <p class="lead">
-                        <a class="btn btn-primary" href="#jumbotron" role="button">Take me to the forum</a>
-                    </p>
+        <h2>Welcome to Forum Overview</h2>
+        <br>
+        <div class="row">
+            <div class="col-3">
+
+                <!--list of my opened discussions-->
+                <div class="card bg-secondary mb-3 my-custom-shadow-box" style="max-width: 30rem;">
+                    <div class="card-header">My Questions</div>
+                    <div class="card-body">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <h4>Latest discussion</h4>
+
+                <!--list of latest discussion-->
+                <div class="card bg-secondary mb-5 my-custom-shadow-box" style="max-width: 50rem;">
+                    <div class="card-body">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <!--actions area-->
+                <div class="card bg-secondary mb-3 my-custom-shadow-box" style="max-width: 30rem;">
+                    <div class="card-header">Actions</div>
+                    <div class="card-body">
+                        <a type="button" class="btn btn-outline-primary btn-sm">Ask new question</a>
+                    </div>
+                </div>
+
+
+                <!--list of discussions with my answers in it-->
+                <div class="card bg-secondary mb-3 my-custom-shadow-box" style="max-width: 30rem;">
+                    <div class="card-header">My answered Discussions</div>
+                    <div class="card-body">
+
+                    </div>
                 </div>
             </div>
         </div>
