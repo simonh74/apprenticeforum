@@ -82,7 +82,7 @@ public class User
     @Getter
     @Setter
     @ManyToMany(mappedBy = "discussionmembers")
-    private Collection<Discussion> memberofdiscussion;
+    public Collection<Discussion> memberofdiscussion;
 
     //Bidirectional @oneToMany with @JoinColumn
     @Getter
@@ -95,7 +95,7 @@ public class User
         super();
     }
 
-    public User(int user_id, String firstname, String lastname, String email, int congizantid, String password, boolean verified, int verification_code) {
+    public User(int user_id, String firstname, String lastname, String email, int congizantid, String password, boolean verified, int verification_code, Set<Role> userroles) {
         this.user_id = user_id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -104,5 +104,6 @@ public class User
         this.password = password;
         this.verified = verified;
         this.verification_code = verification_code;
+        this.userroles = userroles;
     }
 }

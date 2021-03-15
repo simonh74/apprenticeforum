@@ -59,6 +59,7 @@ public class UserService implements UserDetailsService
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = getByEmail(email);
+        //additionally check if the user is verified or not. User can only log in if they're verified.
         if (user == null || !user.isVerified()) {
             throw new UsernameNotFoundException("Not found!");
         }

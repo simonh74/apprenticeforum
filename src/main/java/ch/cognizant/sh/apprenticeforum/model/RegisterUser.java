@@ -29,9 +29,10 @@ public class RegisterUser
 
     @Getter
     @Setter
-    @NotEmpty(message = "cognizant ID cannot be empty")
-    @Size(min=2, max=6, message = "Length of your cognizant id cannot be longer than 6 digits")
-    public int congizantid;
+    @NotNull(message = "cognizant ID cannot be empty")
+    @Min(0)
+    @Max(999999)
+    public int cognizantid;
 
     @Getter
     @Setter
@@ -56,18 +57,19 @@ public class RegisterUser
     @Setter
     public String confirmpassword;
 
-
     public RegisterUser() {
-
+        super();
     }
 
-    public RegisterUser(int registerUser_id, String firstname, String lastname, String email, String password, String confirmpassword, int verification_code) {
+    public RegisterUser(int registerUser_id, String firstname, String lastname, int cognizantid,
+                        String email, String password, int verification_code, String confirmpassword) {
         this.registerUser_id = registerUser_id;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.cognizantid = cognizantid;
         this.email = email;
         this.password = password;
-        this.confirmpassword = confirmpassword;
         this.verification_code = verification_code;
+        this.confirmpassword = confirmpassword;
     }
 }

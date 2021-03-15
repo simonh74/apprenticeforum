@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Title</title>
+    <title>Login to the Forum</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://resources.ctsapprentice.ch/css/main/bootstrap.css"/>
@@ -10,41 +10,56 @@
     <link rel="icon" href="https://resources.ctsapprentice.ch/images/icon/cts.ico"/>
 </head>
 <body>
-<h1>Hello, world!</h1>
-
-<section id="card" class="py-5">
+<section id="card" class="py-2">
     <div class="container aos-init aos-animate" data-aos="fade-right">
-        <div class="row my-5">
-
+        <div class="row my-3">
             <div class="col">
                 <center>
-                    <form>
-                        <fieldset>
-                            <div class="card bg-secondary mb-1" style="max-width: 30rem;">
-                                <!--<div class="card-header">Header</div>-->
-                                <div class="card-body">
-                                    <h4 class="card-title">Login</h4>
+                    <div class="card bg-secondary mb-1" style="max-width: 30rem;">
+                        <div class="card-body">
+                            <h4 class="card-title">Login</h4>
+
+                            <form th:action="@{/login}" method="post">
+                                <fieldset>
+                                    <!--display message when user clicked the logout button-->
+                                    <div th:if="${param.logout}" class="alert alert-success">
+                                        You've been logged out
+                                    </div>
+
+                                    <!--display custom message of type error sent from the controller-->
+                                    <div th:if="${errormsg != null}" class="alert alert-danger" th:text="*{errormsg}"></div>
+
+                                    <!--display custom message of type success sent from the controller-->
+                                    <div th:if="${sucessmsg != null}" class="alert alert-success" th:text="*{sucessmsg}"></div>
+
+
+                                    <!--log in using email and password-->
                                     <div>
                                         <div class="form-group">
                                             <label for="inputEmail">Email address</label>
-                                            <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter email">
-                                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
-                                                else.
-                                            </small>
+                                            <input type="email" name="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter email" required>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="inputPassword">Password</label>
-                                            <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                                            <input type="password" name="password" class="form-control" id="inputPassword" placeholder="Password" required>
                                         </div>
                                     </div>
-                                    <!--<p class="card-text">test</p>-->
-                                </div>
-                            </div>
 
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </fieldset>
-                    </form>
+                                    <!--submit the data or if you don't have an account yet, log in.-->
+                                    <center>
+                                        <a href="/resetpassword/email">I forgot my password</a>
+                                        <br><br>
+                                        <button type="submit" class="btn btn-primary">Login</button>
+                                        <hr>
+                                        <label>No Account yet?</label>
+                                        <br>
+                                        <a href="/register" class="btn btn-success" type="submit">Register</a>
+                                    </center>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
                 </center>
             </div>
         </div>

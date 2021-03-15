@@ -17,7 +17,7 @@ public class EmailSenderService
         this.javaMailSender = javaMailSender;
     }
 
-    public void sendNotification(User user, int code) throws MailException {
+    public void sendEmail(User user, int code) throws MailException {
         //send Email
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setTo(user.getEmail());

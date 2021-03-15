@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register an account</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://resources.ctsapprentice.ch/css/main/bootstrap.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <link rel="icon" href="https://resources.ctsapprentice.ch/images/icon/cts.ico"/>
+</head>
+<body>
+<section id="card" class="py-2">
+    <div class="container aos-init aos-animate" data-aos="fade-right">
+        <div class="row my-3">
+            <div class="col">
+                <center>
+                    <div class="card bg-secondary mb-1" style="max-width: 30rem;">
+                        <div class="card-body">
+                            <h4 class="card-title">Verifying it's you</h4>
+
+                            <form th:action="@{/verify}" th:object="${verificationHelper}" method="post">
+                                <fieldset>
+                                    <p class="card-text">Almost done! For security purposes,
+                                        we just need to verify your email. Please check your inbox and enter the 6 digit code here.</p>
+
+                                    <!--display custom message sent from the controller-->
+                                    <div th:if="${message != null}" class="alert alert-dismissible alert-danger">
+                                        <button type="button" class="close" data-dismiss="alert">×</button>
+                                        <p style="color: #831C24;" th:text="${message}"></p>
+                                    </div>
+
+                                    <!--hidden inputs, so the @PostMapping method of this form doesn't receive null attributes-->
+                                    <input type="hidden" th:field="*{vh_user_id}"/>
+                                    <input type="hidden" th:field="*{new_password}">
+                                    <input type="hidden" th:field="*{confirm_new_password}">
+
+                                    <!--one input to enter the verification code-->
+                                    <div>
+                                        <div class="form-group">
+                                            <label class="col-form-label" for="inputVerificationCode">Verification Code</label>
+                                            <input type="number" class="form-control" placeholder="Verification code (e.g 820722)" id="inputVerificationCode" th:field="*{verification_code}" required>
+                                        </div>
+                                    </div>
+                                    <!--submit the code-->
+                                    <center>
+                                        <button type="submit" class="btn btn-success">verify</button>
+                                    </center>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </center>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init();
+</script>
+</body>
+</html>

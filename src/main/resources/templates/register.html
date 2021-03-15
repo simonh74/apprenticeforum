@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Title</title>
+    <title>Register an account</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://resources.ctsapprentice.ch/css/main/bootstrap.css"/>
@@ -10,20 +10,87 @@
     <link rel="icon" href="https://resources.ctsapprentice.ch/images/icon/cts.ico"/>
 </head>
 <body>
-<h1>Hello, world!</h1>
+<section id="card" class="py-2">
+    <div class="container aos-init aos-animate" data-aos="fade-right">
+        <div class="row my-3">
+            <div class="col">
+                <center>
+                    <div class="card bg-secondary mb-1" style="max-width: 30rem;">
+                        <div class="card-body">
+                            <h4 class="card-title">Register</h4>
 
-<div class="row my-5">
-    <div class="col">
-        <div class="card bg-secondary mb-3" style="max-width: 20rem;">
-            <!--<div class="card-header">Header</div>-->
-            <div class="card-body">
-                <h4 class="card-title">Register</h4>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                    the card's content.</p>
+                            <form th:action="@{/register}" th:object="${registerUser}" method="post">
+                                <fieldset>
+                                    <!--error messages from validation annotations-->
+                                    <div th:if="${#fields.hasErrors()}" class="alert alert-dismissible alert-danger">
+                                        <button type="button" class="close" data-dismiss="alert">×</button>
+                                        <p th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></p>
+                                        <p th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></p>
+                                        <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                                        <p th:if="${#fields.hasErrors('cognizantid')}" th:errors="*{cognizantid}"></p>
+                                        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                                    </div>
+
+                                    <!--display custom message sent from the controller-->
+                                    <div th:if="${message != null}" class="alert alert-dismissible alert-danger">
+                                        <button type="button" class="close" data-dismiss="alert">×</button>
+                                        <p style="color: #831C24;" th:text="${message}"></p>
+                                    </div>
+
+                                    <!--form input to enter in personal data like firstname, lasname, email, new password etc.-->
+                                    <div>
+                                        <div class="form-group">
+                                            <label class="col-form-label" for="inputFirstname">Firstname</label>
+                                            <input type="text" class="form-control" placeholder="Firstname" id="inputFirstname" th:field="*{firstname}" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-form-label" for="inputLastname">Lastname</label>
+                                            <input type="text" class="form-control" placeholder="Lastname" id="inputLastname" th:field="*{lastname}" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-form-label" for="inputCognizantid">Cognizant-ID</label>
+                                            <input type="number" class="form-control" placeholder="Cognizant-ID" id="inputCognizantid" th:field="*{cognizantid}" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputEmail">Email address</label>
+                                            <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter email" th:field="*{email}" required>
+                                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                                                else.
+                                            </small>
+                                        </div>
+
+                                        <br>
+                                        <div class="form-group">
+                                            <label for="inputnewPassword">New Password</label>
+                                            <input type="password" class="form-control" id="inputnewPassword" placeholder="New Password" th:field="*{password}" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputconfirmPassword">Confirm Password</label>
+                                            <input type="password" class="form-control" id="inputconfirmPassword" placeholder="Confirm Password" th:field="*{confirmpassword}" required>
+                                        </div>
+                                    </div>
+
+                                    <!--submit the data or if you already have an account, log in.-->
+                                    <center>
+                                        <button type="submit" class="btn btn-primary">Register</button>
+                                        <hr>
+                                        <label>Already have an account?</label>
+                                        <br>
+                                        <a href="/login" class="btn btn-success" type="submit">Login</a>
+                                    </center>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </center>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
