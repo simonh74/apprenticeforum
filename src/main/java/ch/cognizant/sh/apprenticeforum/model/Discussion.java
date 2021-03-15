@@ -47,8 +47,7 @@ public class Discussion
         super();
     }
 
-    public Discussion(int discussion_id, boolean resolved) {
-        this.discussion_id = discussion_id;
+    public Discussion(boolean resolved) {
         this.resolved = resolved;
     }
 }
