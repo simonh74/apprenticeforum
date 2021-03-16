@@ -99,6 +99,27 @@ public class ForumController
         }
     }
 
+    @PostMapping("/answer-question")
+    public String processAnswerQuestion(@Valid @ModelAttribute Answer answer, BindingResult result, Model model) {
+        //here we are creating a answer and attach it to list of posts of the discussion
+        Discussion discussionWithTheAnswer = answer.getPosted_in_discussion();
+        discussionWithTheAnswer.getDiscussionListOfPosts().add(answer);
+
+        //save answer to the database
+        answerService.add(answer);
+
+        //get Question of the discussion
+        Question questionOfDiscussion = new Question();
+        for(Post postitr : discussionWithTheAnswer.getDiscussionListOfPosts()) {
+            if(postitr instanceof Question) {
+                questionOfDiscussion = (Question) postitr;
+                break;
+            }
+        }
+
+        return "redirect:/view-question?id=" + questionOfDiscussion.getPost_id();
+    }
+
     @GetMapping("/view-question")
     public String showDiscussionPage(@RequestParam(name="id", required = true) int id, Model model) {
         //get question by the id passed in the URL
