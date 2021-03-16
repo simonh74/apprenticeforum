@@ -101,7 +101,12 @@
                                         <p style="color: #831C24;" th:text="${message}"></p>
                                     </div>
 
-                                    <!--form input to enter in personal data like firstname, lasname, email, new password etc.-->
+                                    <!--hidden field because I need the attribute below to access them in the Post controller method-->
+                                    <input style="display: none;" type="text" th:field="*{posted_in_discussion}"/>
+                                    <input style="display: none;" type="text" th:field="*{posted_from_user}"/>
+                                    <input style="display: none;" type="text" th:field="*{post_id}"/>
+
+                                    <!--form input to edit the content of the answer-->
                                     <div>
                                         <div class="form-group">
                                             <label class="col-form-label" for="inputContent">Content</label>
@@ -111,7 +116,7 @@
 
                                     <!--submit the data and open up discussion-->
                                     <center>
-                                        <a type="button" th:href="@{/view-question?id={id}(id=${questionOfDiscussion.post_id})}" class="btn btn-warning">Cancel</a>
+                                        <a type="button" th:href="@{/view-discussion?id={id}(id=${questionOfDiscussion.post_id})}" class="btn btn-warning">Cancel</a>
                                         <button type="submit" class="btn btn-primary">Submit</button>
                                     </center>
                                 </fieldset>

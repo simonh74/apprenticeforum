@@ -116,6 +116,10 @@ public class ForumController
             //get Question of the discussion
             Question questionOfDiscussion = getQuestionOfDiscussion(discussionWithTheAnswer);
 
+            //add today's date to the answer
+            Date date_of_now = new Date(System.currentTimeMillis());
+            answer.setDate_posted(date_of_now);
+
             //save answer to the database
             answerService.add(answer);
 
@@ -168,15 +172,6 @@ public class ForumController
         return "edit-question";
     }
 
-    @GetMapping("/edit-answer")
-    public String showEditAnswerPage(@RequestParam(name="id", required = true) int id, Model model) {
-        //get the answer object by the id passed in the URL
-        Answer answerOfDiscussion = answerService.getById(id);
-
-        model.addAttribute("answerOfDiscussion", answerOfDiscussion);
-        return "edit-answer";
-    }
-
     @PostMapping("/edit-question")
     public String processEditQuestion(@Valid @ModelAttribute Question question, BindingResult result, Model model) {
         //check if the form as any validation errors
@@ -189,6 +184,20 @@ public class ForumController
             //return back to the view-discussion page -> therefore we need the id of the question of the discussion
             return "redirect:/view-discussion?id=" + question.getPost_id();
         }
+    }
+
+    @GetMapping("/edit-answer")
+    public String showEditAnswerPage(@RequestParam(name="id", required = true) int id, Model model) {
+        //get the answer object by the id passed in the URL
+        Answer answerOfDiscussion = answerService.getById(id);
+
+        //get the question of the discussion
+        Discussion discussionWithTheAnswer = answerOfDiscussion.getPosted_in_discussion();
+        Question questionOfDiscussion = getQuestionOfDiscussion(discussionWithTheAnswer);
+
+        model.addAttribute("answer", answerOfDiscussion);
+        model.addAttribute("questionOfDiscussion", questionOfDiscussion);
+        return "edit-answer";
     }
 
     @PostMapping("/edit-answer")
@@ -346,9 +355,16 @@ public class ForumController
                 else {
                     if(counter2 < amount2) {
                         //if false: the post is an answer -> get the question of the discussion and add it to the list nr. 2
-                        Discussion mydisc = postitr.getPosted_in_discussion();
-                        discussions_with_my_answer.add(mydisc.getDiscussionListOfPosts().get(0));
-                        counter2++;
+                        Discussion discussion_with_my_answer = postitr.getPosted_in_discussion();
+
+                        //get question of discussion
+                        Question questionOfDiscussion = getQuestionOfDiscussion(discussion_with_my_answer);
+
+                        //check if the question hasn't already been added to list -> if not then add it
+                        if(!discussions_with_my_answer.contains(questionOfDiscussion)) {
+                            discussions_with_my_answer.add(questionOfDiscussion);
+                            counter2++;
+                        }
                     }
                 }
             }
@@ -385,6 +401,11 @@ public class ForumController
             getCurrentlyLoggedInUser().getDownvoted_posts().remove(helpful_post);
             postService.update(id, helpful_post);
             return;
+        } else {
+            //check if the user already upvoted the post and tries to upvote again
+            if(helpful_post.getUpvoted_from_users().contains(getCurrentlyLoggedInUser())) {
+                return;
+            }
         }
 
         //add the logged in user to the list of upvotes of the post (can be answer or question)
@@ -407,6 +428,11 @@ public class ForumController
             getCurrentlyLoggedInUser().getUpvoted_posts().remove(not_helpful_post);
             postService.update(id, not_helpful_post);
             return;
+        } else {
+            //check if the user already downvoted the post and tries to downvote again
+            if(not_helpful_post.getDownvoted_from_users().contains(getCurrentlyLoggedInUser())) {
+                return;
+            }
         }
 
         //add the logged in user to the list of downvotes of the post (can be answer or question)

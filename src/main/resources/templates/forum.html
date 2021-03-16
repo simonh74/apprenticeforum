@@ -150,7 +150,7 @@
                     <div class="card-header">My answered Discussions</div>
                     <div class="card-body">
                         <!--list of discussions with my answers in it-->
-                        <div th:each="post: ${listOfDiscussionsWithMyAnswer}">
+                        <div class="forum-postlistitem" th:each="post: ${listOfDiscussionsWithMyAnswer}">
                             <span style="font-weight: bold;" th:text="${post.title}"></span>
                             <span th:text="${post.content}"></span>
                             <a class="btn btn-primary btn-sm" th:href="@{/view-discussion?id={id}(id=${post.post_id})}">View</a>
