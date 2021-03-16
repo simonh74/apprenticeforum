@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ask a new question</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://resources.ctsapprentice.ch/css/main/bootstrap.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <link rel="icon" href="https://resources.ctsapprentice.ch/images/icon/cts.ico"/>
+
+    <!--custom stylsheet-->
+    <link rel="stylesheet" href="/css/mystyles.css">
+</head>
+<body>
+
+<!--responsive navbar-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!--logo-->
+    <a class="navbar-brand" href="#">Apprentice Forum</a>
+    <!--hamburger menu-->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02"
+            aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!--links-->
+    <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="home">Home</a>
+            </li>
+            <li class="nav-item active dropdown">
+                <a class="nav-link dropdown-toggle" href="forum" id="forumdropdown" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Forum
+                </a>
+                <div class="dropdown-menu" aria-labelledby="forumdropdown">
+                    <a class="dropdown-item" href="forum">Overview</a>
+                    <a class="dropdown-item" href="ask-question">Ask new question</a>
+                </div>
+            </li>
+            <li class="nav-item active dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="myaccountdropdown" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    My Account
+                </a>
+                <div class="dropdown-menu" aria-labelledby="myaccountdropdown">
+                    <a class="dropdown-item" href="#">Edit</a>
+                    <a class="dropdown-item" href="register">Register</a>
+                    <a class="dropdown-item" data-toggle="modal" data-target="#myModal" href="">Logout</a>
+                </div>
+
+                <!--modal for logout confirmation-->
+                <div class="modal" id="myModal" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Logout</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to logout?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <form th:action="@{/logout}" method="post">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Yes</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!--content (form for asking a question)-->
+<section id="card" class="py-2">
+    <div class="container aos-init aos-animate" data-aos="fade-right">
+        <div class="row my-3">
+            <div class="col">
+                <center>
+                    <div class="card bg-secondary mb-1">
+                        <div class="card-body">
+                            <h4 class="card-title" style="text-transform: uppercase;">Search for questions or answers</h4>
+
+                            <label class="col-form-label" for="inputSearch">Search for posts</label>
+                            <input id="inputSearch" type="text" class="form-control" placeholder="Search keywords for anything (question and answers)" onkeyup="searchQuestion()" style="margin-bottom: 20px;">
+
+                            <!--in case the post table in the database is empty-->
+                            <div th:if="${#lists.isEmpty(questionlist)}">
+                                <center style="color: grey;">No Question posted yet.</center>
+                            </div>
+
+                            <div>
+                                <ul id="filter-ul-list" class="search-question-list" style="list-style-type: none; padding: 0; margin:0;">
+                                    <li th:if="${not #lists.isEmpty(questionlist)}" th:each="question: ${questionlist}">
+                                        <div class="card bg-secondary mb-5 my-custom-shadow-box">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-1">
+                                                        <div class="center">
+                                                            <a class="voting-arrow" th:href="@{/search-question/upvote-post?id={id}(id=${question.post_id})}"><span>&#9650;</span></a>
+                                                            <span th:text="${question.upvoted_from_users.size()} - ${question.downvoted_from_users.size()}" style="text-align:center;"></span>
+                                                            <a class="voting-arrow" th:href="@{/search-question/downvote-post?id={id}(id=${question.post_id})}"><span>&#9660;</span></a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-9">
+                                                        <div>
+                                                            <h4 id="search-result-candidate" class="card-title" th:text="${question.title}"></h4>
+                                                            <p class="card-text" th:text="${question.content}"></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <a class="btn btn-primary btn-sm" th:href="@{/view-discussion?id={id}(id=${question.post_id})}">View</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </center>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript" src="/js/filter-questions.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#sidebarCollapse").on('click', function() {
+           $("#sidebar").toggleClass('active');
+        });
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init();
+</script>
+</body>
+</html>

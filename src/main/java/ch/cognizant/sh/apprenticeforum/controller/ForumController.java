@@ -50,7 +50,6 @@ public class ForumController
         model.addAttribute("listOfLatestDiscussions", latest_questions);
         model.addAttribute("listOfMyPostedQuestions", my_posted_questions);
         model.addAttribute("listOfDiscussionsWithMyAnswer", discussions_with_my_answer);
-
         return "forum";
     }
 
@@ -256,6 +255,21 @@ public class ForumController
         return "redirect:/view-discussion?id=" + questionOfDiscussion.getPost_id();
     }
 
+    @GetMapping("/search-question")
+    public String showSearchQuestionPage(Model model) {
+        //get all question in the database
+        Collection<Post> allPostsFromDb = (Collection<Post>) postService.getAll();
+        Collection<Question> allQuestionsFromDb = new ArrayList<>();
+        for(Post postitr : allPostsFromDb) {
+            if(postitr instanceof Question) {
+                allQuestionsFromDb.add((Question) postitr);
+            }
+        }
+        model.addAttribute("questionlist", allQuestionsFromDb);
+
+        return "search-question";
+    }
+
     @GetMapping("/view-discussion/upvote-post")
     public String upvotePostFromViewDiscussionPage(@RequestParam(name="id", required = true) int id, Model model) {
         //upvote post
@@ -294,6 +308,22 @@ public class ForumController
         downvotePost(id);
 
         return "redirect:/forum";
+    }
+
+    @GetMapping("/search-question/upvote-post")
+    public String upvotePostFromSearchQuestionPage(@RequestParam(name="id", required = true) int id, Model model) {
+        //upvote post
+        upvotePost(id);
+
+        return "redirect:/search-question";
+    }
+
+    @GetMapping("/search-question/downvote-post")
+    public String downvotePostFromSearchQuestionPage(@RequestParam(name="id", required = true) int id, Model model) {
+        //downvote post
+        downvotePost(id);
+
+        return "redirect:/search-question";
     }
 
     private User getCurrentlyLoggedInUser() {
