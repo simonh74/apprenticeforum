@@ -1,23 +1,20 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Home</title>
+    <title>Edit your question</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://resources.ctsapprentice.ch/css/main/bootstrap.css"/>
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
     <link rel="icon" href="https://resources.ctsapprentice.ch/images/icon/cts.ico"/>
-
-    <!--custom stylsheet-->
-    <link rel="stylesheet" href="/css/mystyles.css">
 </head>
 <body>
 
 <!--responsive navbar-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <!--logo-->
-    <a class="navbar-brand" href="#">Apprentice Forum</a>
+    <a class="navbar-brand" href="home">Apprentice Forum</a>
     <!--hamburger menu-->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02"
             aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,20 +77,54 @@
     </div>
 </nav>
 
-<!--content of the homepage-->
-<section id="jumbotron" class="py-5">
+<!--content (form for asking a question)-->
+<section id="card" class="py-2">
     <div class="container aos-init aos-animate" data-aos="fade-right">
-        <div class="row my-5">
+        <div class="row my-3">
             <div class="col">
-                <div class="jumbotron">
-                    <h1 class="display-3">Welcome</h1>
-                    <p class="lead">to the apprentice forums!</p>
-                    <hr class="my-4">
-                    <p>This forum is a collaborative knowledge platform. In this forum you can ask question to which other apprentices can reply to. Or you can simply leave a comment to discussions to help out other poeple.</p>
-                    <p class="lead">
-                        <a class="btn btn-primary" href="forum" role="button">Take me to the forum</a>
-                    </p>
-                </div>
+                <center>
+                    <div class="card bg-secondary mb-1" style="max-width: 40rem;">
+                        <div class="card-body">
+                            <h4 class="card-title">Edit your question</h4>
+
+                            <form th:action="@{/edit-question}" th:object="${question}" method="post">
+                                <fieldset>
+                                    <!--error messages from validation annotations-->
+                                    <div th:if="${#fields.hasErrors()}" class="alert alert-dismissible alert-danger">
+                                        <button type="button" class="close" data-dismiss="alert">×</button>
+                                        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+                                        <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></p>
+                                    </div>
+
+                                    <!--display custom message sent from the controller-->
+                                    <div th:if="${message != null}" class="alert alert-dismissible alert-danger">
+                                        <button type="button" class="close" data-dismiss="alert">×</button>
+                                        <p style="color: #831C24;" th:text="${message}"></p>
+                                    </div>
+
+                                    <!--form input to enter in personal data like firstname, lasname, email, new password etc.-->
+                                    <div>
+                                        <div class="form-group">
+                                            <label class="col-form-label" for="inputTitle">Title</label>
+                                            <input type="text" class="form-control" placeholder="Title" id="inputTitle" th:field="*{title}" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-form-label" for="inputContent">Content</label>
+                                            <textarea rows="7" class="form-control" placeholder="Describe your issue/matter" id="inputContent" th:field="*{content}" required></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!--submit the data and open up discussion-->
+                                    <center>
+                                        <a type="button" th:href="@{/view-question?id={id}(id=${questionOfDiscussion.post_id})}" class="btn btn-warning">Cancel</a>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </center>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </center>
             </div>
         </div>
     </div>

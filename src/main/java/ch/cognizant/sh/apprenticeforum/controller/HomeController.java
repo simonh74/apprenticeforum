@@ -11,4 +11,9 @@ public class HomeController
     public String showHomePage(Model model) {
         return "home";
     }
+
+    @GetMapping("/home")
+    public String showHomePage2(Model model) {
+        return "home";
+    }
 }

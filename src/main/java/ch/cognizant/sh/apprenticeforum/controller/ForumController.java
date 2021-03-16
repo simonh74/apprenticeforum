@@ -1,10 +1,7 @@
 package ch.cognizant.sh.apprenticeforum.controller;
 
 import ch.cognizant.sh.apprenticeforum.model.*;
-import ch.cognizant.sh.apprenticeforum.service.DiscussionService;
-import ch.cognizant.sh.apprenticeforum.service.PostService;
-import ch.cognizant.sh.apprenticeforum.service.QuestionService;
-import ch.cognizant.sh.apprenticeforum.service.UserService;
+import ch.cognizant.sh.apprenticeforum.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +24,9 @@ public class ForumController
 {
     @Autowired
     public QuestionService questionService;
+
+    @Autowired
+    public AnswerService answerService;
 
     @Autowired
     public UserService userService;
@@ -95,7 +95,7 @@ public class ForumController
             //add question to the database incl. foreign keys for user and discussion
             questionService.add(question);
 
-            return "forum";
+            return "redirect:/forum";
         }
     }
 
@@ -128,7 +128,99 @@ public class ForumController
         model.addAttribute("answer", answer);
         model.addAttribute("listOfAnswers", listOfAnswers);
 
+        //add logged in user to the model -> to show edit and delete button if the logged in user equals the author of the post
+        model.addAttribute("loggedInUser", getCurrentlyLoggedInUser());
+
         return "view-discussion";
+    }
+
+    @GetMapping("/edit-question")
+    public String showEditQuestionPage(@RequestParam(name="id", required = true) int id, Model model) {
+        //get the question object by the id passed in the URL
+        Question questionOfDiscussion = questionService.getById(id);
+
+        model.addAttribute("questionOfDiscussion", questionOfDiscussion);
+        return "edit-question";
+    }
+
+    @GetMapping("/edit-answer")
+    public String showEditAnswerPage(@RequestParam(name="id", required = true) int id, Model model) {
+        //get the answer object by the id passed in the URL
+        Answer answerOfDiscussion = answerService.getById(id);
+
+        model.addAttribute("answerOfDiscussion", answerOfDiscussion);
+        return "edit-answer";
+    }
+
+    @PostMapping("/edit-question")
+    public String processEditQuestion(@Valid @ModelAttribute Question question, BindingResult result, Model model) {
+        //update the question in the database
+        questionService.update((long) question.getPost_id(), question);
+
+        //return back to the view-question page -> therefore we need the id of the question of the discussion
+        return "redirect:/view-question?id=" + question.getPost_id();
+    }
+
+    @PostMapping("/edit-answer")
+    public String processEditAnswer(@Valid @ModelAttribute Answer answer, BindingResult result, Model model) {
+        //update the answer in the database
+        answerService.update((long) answer.getPost_id(), answer);
+
+        //return back to the view-question page -> therefore we need the id of the question of the discussion
+        Discussion discussionWithTheAnswer = answer.getPosted_in_discussion();
+        Question questionOfDiscussion = new Question();
+        for(Post postitr : discussionWithTheAnswer.getDiscussionListOfPosts()) {
+            if(postitr instanceof Question) {
+                questionOfDiscussion = (Question) postitr;
+                break;
+            }
+        }
+        return "redirect:/view-question?id=" + questionOfDiscussion.getPost_id();
+    }
+
+    @GetMapping("/delete-question")
+    public String deleteQuestionAndDiscussion(@RequestParam(name="id", required = true) int id, Model model) {
+        //get the question by id
+        Question questionOfDiscussion = questionService.getById(id);
+
+        //to clean up foreign keys, we need to remove the question from the discussion
+        Discussion discussionWithTheQuestion = questionOfDiscussion.getPosted_in_discussion();
+        discussionWithTheQuestion.getDiscussionListOfPosts().remove(questionOfDiscussion);
+
+        //delete question from the database
+        questionService.deleteById(id);
+
+        //delete discussion from database, because there is no discussion without an answer
+        discussionService.deleteById(discussionWithTheQuestion.getDiscussion_id());
+
+        //return back to forum, because the discussion doesn't exist anymore
+        return "redirect:/forum";
+    }
+
+    @GetMapping("/delete-answer")
+    public String deleteAnswer(@RequestParam(name="id", required = true) int id, Model model) {
+        //get the Answer object by the id
+        Answer answerOfDiscussion = answerService.getById(id);
+
+        //get Discussion from the answer
+        Discussion discussionWithTheAnswer = answerOfDiscussion.getPosted_in_discussion();
+
+        //to clean up the foreign keys, we first need to delete the answer (post) from the discussion
+        discussionWithTheAnswer.getDiscussionListOfPosts().remove(answerOfDiscussion);
+
+        //now we can delete the answer from the database
+        answerService.deleteById(id);
+
+        //return back to the view-question page -> therefore we need the id of the question of the discussion
+
+        Question questionOfDiscussion = new Question();
+        for(Post postitr : discussionWithTheAnswer.getDiscussionListOfPosts()) {
+            if(postitr instanceof Question) {
+                questionOfDiscussion = (Question) postitr;
+                break;
+            }
+        }
+        return "redirect:/view-question?id=" + questionOfDiscussion.getPost_id();
     }
 
     private User getCurrentlyLoggedInUser() {

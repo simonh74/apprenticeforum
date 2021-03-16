@@ -53,6 +53,9 @@ public class RegisterController
             if(!registerUser.getPassword().equals(registerUser.getConfirmpassword())) {
                 model.addAttribute("message", "The two passwords do not match");
                 return "register";
+            } else if(userService.getByEmail(registerUser.getEmail()) != null) {
+                model.addAttribute("message", "A user already exists with the email you entered");
+                return "register";
             }
             else {
                 String encodedpsw = passwordEncoder.encode(registerUser.getPassword());

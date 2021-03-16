@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
     <link rel="icon" href="https://resources.ctsapprentice.ch/images/icon/cts.ico"/>
+
+    <!--custom stylsheet-->
+    <link rel="stylesheet" href="/css/mystyles.css">
 </head>
 <body>
 
@@ -25,16 +28,16 @@
     <div class="collapse navbar-collapse" id="navbarColor02">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Home</a>
+                <a class="nav-link" href="home">Home</a>
             </li>
             <li class="nav-item active dropdown">
-                <a class="nav-link dropdown-toggle" href="/forum" id="forumdropdown" role="button"
+                <a class="nav-link dropdown-toggle" href="forum" id="forumdropdown" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Forum
                 </a>
                 <div class="dropdown-menu" aria-labelledby="forumdropdown">
-                    <a class="dropdown-item" href="/forum">Overview</a>
-                    <a class="dropdown-item" href="/ask-question">Ask new question</a>
+                    <a class="dropdown-item" href="forum">Overview</a>
+                    <a class="dropdown-item" href="ask-question">Ask new question</a>
                 </div>
             </li>
             <li class="nav-item active dropdown">
@@ -44,8 +47,33 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="myaccountdropdown">
                     <a class="dropdown-item" href="#">Edit</a>
-                    <a class="dropdown-item" href="/register">Register</a>
-                    <a class="dropdown-item" href="/logout">Logout</a>
+                    <a class="dropdown-item" href="register">Register</a>
+                    <a class="dropdown-item" data-toggle="modal" data-target="#myModal" href="">Logout</a>
+                </div>
+
+                <!--modal for logout confirmation-->
+                <div class="modal" id="myModal" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Logout</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to logout?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <form th:action="@{/logout}" method="post">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Yes</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </li>
         </ul>
@@ -58,19 +86,23 @@
     <div class="container aos-init aos-animate" data-aos="fade-right">
         <!--question-->
         <h2>Question:</h2>
-        <div class="card bg-secondary mb-5 my-custom-shadow-box" style="max-width: 60rem;">
+        <div class="card bg-secondary mb-5 my-custom-shadow-box">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col-1">
                         <div class="votesection">
                             <a th:href="@{/view-question/upvote-post?id={id}(id=${questionOfDiscussion.post_id})}"><span style="color: grey;font-size: 1.5em;">&#9650;</span></a>
                             <span th:text="${questionOfDiscussion.upvoted_from_users.size()} - ${questionOfDiscussion.downvoted_from_users.size()}" style="text-align:center;"></span>
                             <a th:href="@{/view_question/downvote-post?id={id}(id=${questionOfDiscussion.post_id})}"><span style="color: grey;font-size: 1.5em;">&#9660;</span></a>
                         </div>
                     </div>
-                    <div class="col-10">
+                    <div class="col-9">
                         <h4 class="card-title" th:text="${questionOfDiscussion.title}"></h4>
                         <p class="card-text" th:text="${questionOfDiscussion.content}"></p>
+                    </div>
+                    <div class="col-2" th:if="${loggedInUser.equals(questionOfDiscussion.posted_from_user)}">
+                        <a th:href="@{/edit-question?id={id}(id=${questionOfDiscussion.post_id})}" class="btn btn-warning btn-sm" style="margin:5px 5px 5px 0px;">Edit</a>
+                        <a th:href="@{/delete-question?id={id}(id=${questionOfDiscussion.post_id})}" class="btn btn-danger btn-sm">Delete</a>
                     </div>
                 </div>
             </div>
@@ -83,7 +115,7 @@
         <!--answers-->
         <h3>Answers:</h3>
         <div th:each="answer: ${listOfAnswers}">
-            <div class="card bg-secondary mb-5 my-custom-shadow-box" style="max-width: 60rem;">
+            <div class="card bg-secondary mb-5 my-custom-shadow-box">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-1">
@@ -96,8 +128,9 @@
                         <div class="col-9">
                             <p class="card-text" th:text="${answer.content}"></p>
                         </div>
-                        <div class="col-2">
-                            <a class="btn btn-primary btn-sm" th:href="@{/view-question?id={id}(id=${question.post_id})}">View</a>
+                        <div class="col-2" th:if="${loggedInUser.equals(answer.posted_from_user)}">
+                            <a th:href="@{/edit-answer?id={id}(id=${answer.post_id})}" class="btn btn-warning btn-sm" style="margin:5px 5px 5px 0px;">Edit</a>
+                            <a th:href="@{/delete-answer?id={id}(id=${answer.post_id})}" class="btn btn-danger btn-sm">Delete</a>
                         </div>
                     </div>
                 </div>
