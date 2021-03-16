@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View discussion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://resources.ctsapprentice.ch/css/main/bootstrap.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <link rel="icon" href="https://resources.ctsapprentice.ch/images/icon/cts.ico"/>
+</head>
+<body>
+
+<!--responsive navbar-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!--logo-->
+    <a class="navbar-brand" href="#">Apprentice Forum</a>
+    <!--hamburger menu-->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02"
+            aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!--links-->
+    <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item active dropdown">
+                <a class="nav-link dropdown-toggle" href="/forum" id="forumdropdown" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Forum
+                </a>
+                <div class="dropdown-menu" aria-labelledby="forumdropdown">
+                    <a class="dropdown-item" href="/forum">Overview</a>
+                    <a class="dropdown-item" href="/ask-question">Ask new question</a>
+                </div>
+            </li>
+            <li class="nav-item active dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="myaccountdropdown" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    My Account
+                </a>
+                <div class="dropdown-menu" aria-labelledby="myaccountdropdown">
+                    <a class="dropdown-item" href="#">Edit</a>
+                    <a class="dropdown-item" href="/register">Register</a>
+                    <a class="dropdown-item" href="/logout">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<!--content view discussion with question and answers-->
+<section id="card" class="py-5">
+    <div class="container aos-init aos-animate" data-aos="fade-right">
+        <!--question-->
+        <h2>Question:</h2>
+        <div class="card bg-secondary mb-5 my-custom-shadow-box" style="max-width: 60rem;">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-2">
+                        <div class="votesection">
+                            <a th:href="@{/view-question/upvote-post?id={id}(id=${questionOfDiscussion.post_id})}"><span style="color: grey;font-size: 1.5em;">&#9650;</span></a>
+                            <span th:text="${questionOfDiscussion.upvoted_from_users.size()} - ${questionOfDiscussion.downvoted_from_users.size()}" style="text-align:center;"></span>
+                            <a th:href="@{/view_question/downvote-post?id={id}(id=${questionOfDiscussion.post_id})}"><span style="color: grey;font-size: 1.5em;">&#9660;</span></a>
+                        </div>
+                    </div>
+                    <div class="col-10">
+                        <h4 class="card-title" th:text="${questionOfDiscussion.title}"></h4>
+                        <p class="card-text" th:text="${questionOfDiscussion.content}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <hr>
+        <br>
+
+        <!--answers-->
+        <h3>Answers:</h3>
+        <div th:each="answer: ${listOfAnswers}">
+            <div class="card bg-secondary mb-5 my-custom-shadow-box" style="max-width: 60rem;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-1">
+                            <div class="votesection">
+                                <a th:href="@{/view-discussion/upvote-post?id={id}(id=${answer.post_id})}"><span style="color: grey;font-size: 1.5em;">&#9650;</span></a>
+                                <span th:text="${answer.upvoted_from_users.size()} - ${answer.downvoted_from_users.size()}" style="text-align:center;"></span>
+                                <a th:href="@{/view_discussion/downvote-post?id={id}(id=${answer.post_id})}"><span style="color: grey;font-size: 1.5em;">&#9660;</span></a>
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <p class="card-text" th:text="${answer.content}"></p>
+                        </div>
+                        <div class="col-2">
+                            <a class="btn btn-primary btn-sm" th:href="@{/view-question?id={id}(id=${question.post_id})}">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init();
+</script>
+</body>
+</html>

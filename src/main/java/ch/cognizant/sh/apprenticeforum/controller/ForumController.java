@@ -1,9 +1,6 @@
 package ch.cognizant.sh.apprenticeforum.controller;
 
-import ch.cognizant.sh.apprenticeforum.model.Discussion;
-import ch.cognizant.sh.apprenticeforum.model.Post;
-import ch.cognizant.sh.apprenticeforum.model.Question;
-import ch.cognizant.sh.apprenticeforum.model.User;
+import ch.cognizant.sh.apprenticeforum.model.*;
 import ch.cognizant.sh.apprenticeforum.service.DiscussionService;
 import ch.cognizant.sh.apprenticeforum.service.PostService;
 import ch.cognizant.sh.apprenticeforum.service.QuestionService;
@@ -17,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.sql.Date;
@@ -99,6 +97,38 @@ public class ForumController
 
             return "forum";
         }
+    }
+
+    @GetMapping("/view-question")
+    public String showDiscussionPage(@RequestParam(name="id", required = true) int id, Model model) {
+        //get question by the id passed in the URL
+        Question question_to_show = questionService.getById(id);
+
+        //get the discussion from the question
+        Discussion discussion_to_show = discussionService.getById(question_to_show.getPosted_in_discussion().getDiscussion_id());
+
+        //prepare a new empty Answer object for the form below the answers
+        Answer answer = new Answer();
+        answer.setPosted_in_discussion(discussion_to_show);
+
+        //gather together the list of answers of the discussion
+        //Here we are looping through every post of the discussion and exclude the post of type: question
+        List<Post> listOfAnswers = discussion_to_show.getDiscussionListOfPosts();
+        for(Post postitr : listOfAnswers) {
+            //check if post is a question
+            if(postitr instanceof Question) {
+                //if true: add
+                model.addAttribute("questionOfDiscussion", postitr);
+                listOfAnswers.remove(postitr);
+                break;
+            }
+        }
+
+        //pass list of answers and a new possible new answer to the html
+        model.addAttribute("answer", answer);
+        model.addAttribute("listOfAnswers", listOfAnswers);
+
+        return "view-discussion";
     }
 
     private User getCurrentlyLoggedInUser() {
