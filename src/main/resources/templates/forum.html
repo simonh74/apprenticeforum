@@ -95,7 +95,7 @@
                             <div class="forum-postlistitem" th:each="post: ${listOfMyPostedQuestions}">
                                 <span style="font-weight: bold;" th:text="${post.title}"></span>
                                 <span th:text="${post.content}"></span>
-                                <a class="btn btn-primary btn-sm" th:href="@{/view-question?id={id}(id=${post.post_id})}">View</a>
+                                <a class="btn btn-primary btn-sm" th:href="@{/view-discussion?id={id}(id=${post.post_id})}">View</a>
                             </div>
                             <!--in case the list above is empty-->
                             <div th:if="${#lists.isEmpty(listOfMyPostedQuestions)}">
@@ -114,10 +114,10 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-1">
-                                    <div class="votesection">
-                                        <a th:href="@{/forum/upvote-post?id={id}(id=${question.post_id})}"><span style="color: grey;font-size: 1.5em;">&#9650;</span></a>
+                                    <div class="center">
+                                        <a class="voting-arrow" th:href="@{/forum/upvote-post?id={id}(id=${question.post_id})}"><span>&#9650;</span></a>
                                         <span th:text="${question.upvoted_from_users.size()} - ${question.downvoted_from_users.size()}" style="text-align:center;"></span>
-                                        <a th:href="@{/forum/downvote-post?id={id}(id=${question.post_id})}"><span style="color: grey;font-size: 1.5em;">&#9660;</span></a>
+                                        <a class="voting-arrow" th:href="@{/forum/downvote-post?id={id}(id=${question.post_id})}"><span>&#9660;</span></a>
                                     </div>
                                 </div>
                                 <div class="col-9">
@@ -125,7 +125,7 @@
                                     <p class="card-text" th:text="${question.content}"></p>
                                 </div>
                                 <div class="col-2">
-                                    <a class="btn btn-primary btn-sm" th:href="@{/view-question?id={id}(id=${question.post_id})}">View</a>
+                                    <a class="btn btn-primary btn-sm" th:href="@{/view-discussion?id={id}(id=${question.post_id})}">View</a>
                                 </div>
                             </div>
                         </div>
@@ -153,7 +153,7 @@
                         <div th:each="post: ${listOfDiscussionsWithMyAnswer}">
                             <span style="font-weight: bold;" th:text="${post.title}"></span>
                             <span th:text="${post.content}"></span>
-                            <a class="btn btn-primary btn-sm" th:href="@{/view-question?id={id}(id=${post.post_id})}">View</a>
+                            <a class="btn btn-primary btn-sm" th:href="@{/view-discussion?id={id}(id=${post.post_id})}">View</a>
                         </div>
                         <!--in case the list above is empty-->
                         <div th:if="${#lists.isEmpty(listOfDiscussionsWithMyAnswer)}">

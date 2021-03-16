@@ -101,26 +101,29 @@ public class ForumController
 
     @PostMapping("/answer-question")
     public String processAnswerQuestion(@Valid @ModelAttribute Answer answer, BindingResult result, Model model) {
-        //here we are creating a answer and attach it to list of posts of the discussion
-        Discussion discussionWithTheAnswer = answer.getPosted_in_discussion();
-        discussionWithTheAnswer.getDiscussionListOfPosts().add(answer);
-
-        //save answer to the database
-        answerService.add(answer);
-
-        //get Question of the discussion
-        Question questionOfDiscussion = new Question();
-        for(Post postitr : discussionWithTheAnswer.getDiscussionListOfPosts()) {
-            if(postitr instanceof Question) {
-                questionOfDiscussion = (Question) postitr;
-                break;
-            }
+        //here we are creating a answer and attach it to the list of posts of the discussion
+        //check if the form as any validation errors
+        if(result.hasErrors()) {
+            return "view-discussion";
         }
+        else {
+            //get discussion from the answer
+            Discussion discussionWithTheAnswer = answer.getPosted_in_discussion();
 
-        return "redirect:/view-question?id=" + questionOfDiscussion.getPost_id();
+            //add answer to to list of posts in the discussion
+            discussionWithTheAnswer.getDiscussionListOfPosts().add(answer);
+
+            //get Question of the discussion
+            Question questionOfDiscussion = getQuestionOfDiscussion(discussionWithTheAnswer);
+
+            //save answer to the database
+            answerService.add(answer);
+
+            return "redirect:/view-discussion?id=" + questionOfDiscussion.getPost_id();
+        }
     }
 
-    @GetMapping("/view-question")
+    @GetMapping("/view-discussion")
     public String showDiscussionPage(@RequestParam(name="id", required = true) int id, Model model) {
         //get question by the id passed in the URL
         Question question_to_show = questionService.getById(id);
@@ -131,6 +134,7 @@ public class ForumController
         //prepare a new empty Answer object for the form below the answers
         Answer answer = new Answer();
         answer.setPosted_in_discussion(discussion_to_show);
+        answer.setPosted_from_user(getCurrentlyLoggedInUser());
 
         //gather together the list of answers of the discussion
         //Here we are looping through every post of the discussion and exclude the post of type: question
@@ -175,28 +179,33 @@ public class ForumController
 
     @PostMapping("/edit-question")
     public String processEditQuestion(@Valid @ModelAttribute Question question, BindingResult result, Model model) {
-        //update the question in the database
-        questionService.update((long) question.getPost_id(), question);
+        //check if the form as any validation errors
+        if(result.hasErrors()) {
+            return "edit-question";
+        } else {
+            //update the question in the database
+            questionService.update((long) question.getPost_id(), question);
 
-        //return back to the view-question page -> therefore we need the id of the question of the discussion
-        return "redirect:/view-question?id=" + question.getPost_id();
+            //return back to the view-discussion page -> therefore we need the id of the question of the discussion
+            return "redirect:/view-discussion?id=" + question.getPost_id();
+        }
     }
 
     @PostMapping("/edit-answer")
     public String processEditAnswer(@Valid @ModelAttribute Answer answer, BindingResult result, Model model) {
-        //update the answer in the database
-        answerService.update((long) answer.getPost_id(), answer);
+        //check if the form as any validation errors
+        if(result.hasErrors()) {
+            return "edit-answer";
+        } else {
+            //update the answer in the database
+            answerService.update((long) answer.getPost_id(), answer);
 
-        //return back to the view-question page -> therefore we need the id of the question of the discussion
-        Discussion discussionWithTheAnswer = answer.getPosted_in_discussion();
-        Question questionOfDiscussion = new Question();
-        for(Post postitr : discussionWithTheAnswer.getDiscussionListOfPosts()) {
-            if(postitr instanceof Question) {
-                questionOfDiscussion = (Question) postitr;
-                break;
-            }
+            //return back to the view-discussion page -> therefore we need the id of the question of the discussion
+            Discussion discussionWithTheAnswer = answer.getPosted_in_discussion();
+            Question questionOfDiscussion = getQuestionOfDiscussion(discussionWithTheAnswer);
+
+            return "redirect:/view-discussion?id=" + questionOfDiscussion.getPost_id();
         }
-        return "redirect:/view-question?id=" + questionOfDiscussion.getPost_id();
     }
 
     @GetMapping("/delete-question")
@@ -232,16 +241,50 @@ public class ForumController
         //now we can delete the answer from the database
         answerService.deleteById(id);
 
-        //return back to the view-question page -> therefore we need the id of the question of the discussion
+        //return back to the view-discussion page -> therefore we need the id of the question of the discussion
+        Question questionOfDiscussion = getQuestionOfDiscussion(discussionWithTheAnswer);
 
-        Question questionOfDiscussion = new Question();
-        for(Post postitr : discussionWithTheAnswer.getDiscussionListOfPosts()) {
-            if(postitr instanceof Question) {
-                questionOfDiscussion = (Question) postitr;
-                break;
-            }
-        }
-        return "redirect:/view-question?id=" + questionOfDiscussion.getPost_id();
+        return "redirect:/view-discussion?id=" + questionOfDiscussion.getPost_id();
+    }
+
+    @GetMapping("/view-discussion/upvote-post")
+    public String upvotePostFromViewDiscussionPage(@RequestParam(name="id", required = true) int id, Model model) {
+        //upvote post
+        upvotePost(id);
+
+        //get the question id from the upvoted post
+        Discussion discussionWithPost = postService.getById(id).getPosted_in_discussion();
+        Question questionOfDiscussion = getQuestionOfDiscussion(discussionWithPost);
+
+        return "redirect:/view-discussion?id=" + questionOfDiscussion.getPost_id();
+    }
+
+    @GetMapping("/view-discussion/downvote-post")
+    public String downvotePostFromViewDiscussionPage(@RequestParam(name="id", required = true) int id, Model model) {
+        //upvote post
+        downvotePost(id);
+
+        //get the question id from the upvoted post
+        Discussion discussionWithPost = postService.getById(id).getPosted_in_discussion();
+        Question questionOfDiscussion = getQuestionOfDiscussion(discussionWithPost);
+
+        return "redirect:/view-discussion?id=" + questionOfDiscussion.getPost_id();
+    }
+
+    @GetMapping("/forum/upvote-post")
+    public String upvotePostFromForum(@RequestParam(name="id", required = true) int id, Model model) {
+        //upvote post
+        upvotePost(id);
+
+        return "redirect:/forum";
+    }
+
+    @GetMapping("/forum/downvote-post")
+    public String downvotePostFromForumPage(@RequestParam(name="id", required = true) int id, Model model) {
+        //upvote post
+        downvotePost(id);
+
+        return "redirect:/forum";
     }
 
     private User getCurrentlyLoggedInUser() {
@@ -262,14 +305,17 @@ public class ForumController
         Collection<Post> latest_posts = new ArrayList<>();
 
         int counter = 0;
-        for(Post postir : postService.getAll())
-            if(counter <= amount) {
-                latest_posts.add(postir);
-                counter++;
+        for(Post postir : postService.getAll()) {
+            if (counter <= amount) {
+                if (postir instanceof Question) {
+                    latest_posts.add(postir);
+                    counter++;
+                }
             } else {
                 //stop and step out of the for loop
                 break;
             }
+        }
         return latest_posts;
     }
 
@@ -316,5 +362,60 @@ public class ForumController
         two_dim_q_and_a.add(discussions_with_my_answer);
 
         return two_dim_q_and_a;
+    }
+
+    private Question getQuestionOfDiscussion(Discussion discussionWithTheAnswer) {
+        Question questionOfDiscussion = new Question();
+        for(Post postitr : discussionWithTheAnswer.getDiscussionListOfPosts()) {
+            if(postitr instanceof Question) {
+                questionOfDiscussion = (Question) postitr;
+                break;
+            }
+        }
+        return questionOfDiscussion;
+    }
+
+    private void upvotePost(long id) {
+        //get the post object by id
+        Post helpful_post = postService.getById((int)id);
+
+        //first we check if the user already downvoted the post. if yes: we remove it from downvote list and add it here
+        if(helpful_post.getDownvoted_from_users().contains(getCurrentlyLoggedInUser())) {
+            helpful_post.getUpvoted_from_users().remove(getCurrentlyLoggedInUser());
+            getCurrentlyLoggedInUser().getDownvoted_posts().remove(helpful_post);
+            postService.update(id, helpful_post);
+            return;
+        }
+
+        //add the logged in user to the list of upvotes of the post (can be answer or question)
+        helpful_post.getUpvoted_from_users().add(getCurrentlyLoggedInUser());
+
+        //add the post to list of upvoted posts from a user
+        getCurrentlyLoggedInUser().getUpvoted_posts().add(helpful_post);
+
+        //update post in the database with the new upvote
+        postService.update(id, helpful_post);
+    }
+
+    private void downvotePost(long id) {
+        //get the post object by id
+        Post not_helpful_post = postService.getById((int)id);
+
+        //first we check if the user already downvoted the post. if yes: we remove it from downvote list and add it here
+        if(not_helpful_post.getUpvoted_from_users().contains(getCurrentlyLoggedInUser())) {
+            not_helpful_post.getDownvoted_from_users().remove(getCurrentlyLoggedInUser());
+            getCurrentlyLoggedInUser().getUpvoted_posts().remove(not_helpful_post);
+            postService.update(id, not_helpful_post);
+            return;
+        }
+
+        //add the logged in user to the list of downvotes of the post (can be answer or question)
+        not_helpful_post.getDownvoted_from_users().add(getCurrentlyLoggedInUser());
+
+        //add the post to list of upvoted posts from a user
+        getCurrentlyLoggedInUser().getDownvoted_posts().add(not_helpful_post);
+
+        //update post in the database with new downvote
+        postService.update(id, not_helpful_post);
     }
 }

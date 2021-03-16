@@ -22,7 +22,7 @@ public class Answer extends Post
 
     @Getter
     @Setter
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "VARCHAR(10000)")
     public String content;
 
     public Answer() {

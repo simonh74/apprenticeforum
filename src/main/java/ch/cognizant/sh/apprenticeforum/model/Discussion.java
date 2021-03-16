@@ -33,7 +33,6 @@ public class Discussion
             CascadeType.REFRESH, CascadeType.DETACH }, orphanRemoval = true, fetch = FetchType.EAGER)
     public List<Post> discussionListOfPosts = new ArrayList<>();
 
-
     @Getter
     @Setter
     @JoinTable(name = "DISCUSION_USER", joinColumns = {

@@ -7,13 +7,9 @@ body {
     transition: 0.3s;
 }
 
-.votesection {
+.center {
     display: grid;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+    margin: auto;
 }
 
 .forum-postlistitem {
@@ -24,4 +20,11 @@ body {
     display: inline-grid;
     padding: 10px;
     max-height: 15rem;
+}
+
+.voting-arrow {
+    color: grey;
+    font-size: 1.5em;
+    text-align: center;
+    text-decoration: none !important;
 }
