@@ -1,16 +1,13 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>View discussion</title>
+    <title>Edit your question</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://resources.ctsapprentice.ch/css/main/bootstrap.css"/>
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
     <link rel="icon" href="https://resources.ctsapprentice.ch/images/icon/cts.ico"/>
-
-    <!--custom stylsheet-->
-    <link rel="stylesheet" href="/css/mystyles.css">
 </head>
 <body>
 
@@ -80,88 +77,25 @@
     </div>
 </nav>
 
-
-<!--content view discussion with question and answers-->
-<section id="card" class="py-5">
-    <div class="container aos-init aos-animate" data-aos="fade-right">
-        <!--question-->
-        <h2>Question:</h2>
-        <div class="card bg-secondary mb-5 my-custom-shadow-box">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-1">
-                        <div class="center">
-                            <a class="voting-arrow" th:href="@{/view-discussion/upvote-post?id={id}(id=${questionOfDiscussion.post_id})}"><span>&#9650;</span></a>
-                            <span th:text="${questionOfDiscussion.upvoted_from_users.size()} - ${questionOfDiscussion.downvoted_from_users.size()}" style="text-align:center;"></span>
-                            <a class="voting-arrow" th:href="@{/view-discussion/downvote-post?id={id}(id=${questionOfDiscussion.post_id})}"><span>&#9660;</span></a>
-                        </div>
-                    </div>
-                    <div class="col-9">
-                        <h4 class="card-title" th:text="${questionOfDiscussion.title}"></h4>
-                        <p class="card-text" th:text="${questionOfDiscussion.content}"></p>
-                    </div>
-                    <div class="col-2" th:if="${loggedInUser.equals(questionOfDiscussion.posted_from_user)}">
-                        <a th:href="@{/edit-question?id={id}(id=${questionOfDiscussion.post_id})}" class="btn btn-warning btn-sm" style="margin:5px 5px 5px 0px;">Edit</a>
-                        <a th:href="@{/delete-question?id={id}(id=${questionOfDiscussion.post_id})}" class="btn btn-danger btn-sm">Delete</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <br>
-        <hr>
-        <br>
-
-        <!--answers-->
-        <h3>Answers:</h3>
-        <!--in case the list above is empty-->
-        <div th:if="${#lists.isEmpty(listOfAnswers)}">
-            <center style="color: grey;">No Answers to the queston yet</center>
-        </div>
-
-        <div th:each="answer: ${listOfAnswers}">
-            <div class="card bg-secondary mb-5 my-custom-shadow-box">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-1">
-                            <div class="center">
-                                <a class="voting-arrow" th:href="@{/view-discussion/upvote-post?id={id}(id=${answer.post_id})}"><span>&#9650;</span></a>
-                                <span th:text="${answer.upvoted_from_users.size()} - ${answer.downvoted_from_users.size()}" style="text-align:center;"></span>
-                                <a class="voting-arrow" th:href="@{/view-discussion/downvote-post?id={id}(id=${answer.post_id})}"><span>&#9660;</span></a>
-                            </div>
-                        </div>
-                        <div class="col-9">
-                            <p class="card-text" th:text="${answer.content}"></p>
-                        </div>
-                        <div class="col-2" th:if="${loggedInUser.equals(answer.posted_from_user)}">
-                            <a th:href="@{/edit-answer?id={id}(id=${answer.post_id})}" class="btn btn-warning btn-sm" style="margin:5px 5px 5px 0px;">Edit</a>
-                            <a th:href="@{/delete-answer?id={id}(id=${answer.post_id})}" class="btn btn-danger btn-sm">Delete</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-<!--form for answering a question (comment)-->
-<!--content (form for editing a answer)-->
-<section class="py-2">
+<!--content (form for asking a question)-->
+<section id="card" class="py-2">
     <div class="container aos-init aos-animate" data-aos="fade-right">
         <div class="row my-3">
             <div class="col">
                 <center>
-                    <div class="card bg-secondary mb-1" style="min-height: 6rem;">
+                    <div class="card bg-secondary mb-1" style="max-width: 40rem;">
                         <div class="card-body">
-                            <h4 class="card-title" style="text-transform: uppercase;">Participate to the discussion and leave a comment or an answer</h4>
+                            <h4 class="card-title">Edit your account</h4>
 
-                            <form th:action="@{/answer-question}" th:object="${answer}" method="post">
+                            <form th:action="@{/edit-user}" th:object="${registerUser}" method="post">
                                 <fieldset>
                                     <!--error messages from validation annotations-->
                                     <div th:if="${#fields.hasErrors()}" class="alert alert-dismissible alert-danger">
                                         <button type="button" class="close" data-dismiss="alert">×</button>
-                                        <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></p>
+                                        <p th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></p>
+                                        <p th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></p>
+                                        <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                                        <p th:if="${#fields.hasErrors('cognizantid')}" th:errors="*{cognizantid}"></p>
                                     </div>
 
                                     <!--display custom message sent from the controller-->
@@ -170,20 +104,35 @@
                                         <p style="color: #831C24;" th:text="${message}"></p>
                                     </div>
 
-                                    <!--hidden field because I need the "posted_in_discussion" and "posted_from_user" attribute in the Post controller method-->
-                                    <input style="display: none;" type="text" th:field="*{posted_in_discussion}"/>
-                                    <input style="display: none;" type="text" th:field="*{posted_from_user}"/>
-
-                                    <!--form input the content of the answer-->
+                                    <!--form input to enter in personal data like firstname, lasname, email, new password etc.-->
                                     <div>
                                         <div class="form-group">
-                                            <label class="col-form-label" for="inputContent">Content</label>
-                                            <textarea rows="7" class="form-control" placeholder="Describe your answer" id="inputContent" th:field="*{content}" required></textarea>
+                                            <label class="col-form-label" for="inputFirstname">Firstname</label>
+                                            <input type="text" class="form-control" placeholder="Firstname" id="inputFirstname" th:field="*{firstname}" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-form-label" for="inputLastname">Lastname</label>
+                                            <input type="text" class="form-control" placeholder="Lastname" id="inputLastname" th:field="*{lastname}" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-form-label" for="inputCognizantid">Cognizant-ID</label>
+                                            <input type="number" class="form-control" placeholder="Cognizant-ID" id="inputCognizantid" th:field="*{cognizantid}" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="inputEmail">Email address</label>
+                                            <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter email" th:field="*{email}" required>
+                                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                                                else.
+                                            </small>
                                         </div>
                                     </div>
 
-                                    <!--submit the data and open up discussion-->
+                                    <!--submit the data and user is edited-->
                                     <center>
+                                        <a type="button" href="forum" class="btn btn-warning">Cancel</a>
                                         <button type="submit" class="btn btn-primary">Submit</button>
                                     </center>
                                 </fieldset>
