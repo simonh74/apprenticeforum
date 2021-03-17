@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers("/403.html").permitAll()
                 .antMatchers("404.html").permitAll()
                 .antMatchers("/verify").permitAll()
-                .antMatchers("/resetpassword/**").permitAll()
+                .antMatchers("/reset-password/**").permitAll()
                 .antMatchers("/forum").authenticated()
                 .antMatchers("/css/**", "/fragments/**", "/img/**", "/js/**").permitAll()
                 .anyRequest().authenticated()
