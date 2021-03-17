@@ -82,7 +82,7 @@
 <!--Overview of the forum-->
 <section class="py-5">
     <div class="container aos-init aos-animate" data-aos="fade-right">
-        <h2>Welcome to Forum Overview</h2>
+        <h2>Welcome to the Forum Overview</h2>
         <br>
         <div class="row">
             <div class="col-3">
@@ -103,7 +103,7 @@
                         </div>
                     </div>
                 </div>
-                <a th:if="${not #lists.isEmpty(listOfMyPostedQuestions)}" href="#">See All</a>
+                <a th:if="${not #lists.isEmpty(listOfMyPostedQuestions)}" href="view-all-my-questions">See All</a>
             </div>
             <div class="col-6">
                 <h4>Latest discussions</h4>
@@ -163,7 +163,7 @@
                         </div>
                     </div>
                 </div>
-                <a th:if="${not #lists.isEmpty(listOfDiscussionsWithMyAnswer)}" href="#">See All</a>
+                <a th:if="${not #lists.isEmpty(listOfDiscussionsWithMyAnswer)}" href="view-all-my-answers">See All</a>
             </div>
         </div>
     </div>

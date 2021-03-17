@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Ask a new question</title>
+    <title>Search for my Questions</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://resources.ctsapprentice.ch/css/main/bootstrap.css"/>
@@ -87,27 +87,27 @@
                 <center>
                     <div class="card bg-secondary mb-1">
                         <div class="card-body">
-                            <h4 class="card-title" style="text-transform: uppercase;">Search for questions</h4>
+                            <h4 class="card-title" style="text-transform: uppercase;">Search for my questions</h4>
 
-                            <label class="col-form-label" for="inputSearch">Search for posts</label>
-                            <input id="inputSearch" type="text" class="form-control" placeholder="Search keywords for questions" onkeyup="searchQuestion()" style="margin-bottom: 20px;">
+                            <label class="col-form-label" for="inputSearch">Search for question I've asked</label>
+                            <input id="inputSearch" type="text" class="form-control" placeholder="Search keywords in my questions" onkeyup="searchQuestion()" style="margin-bottom: 20px;">
 
                             <!--in case the post table in the database is empty-->
-                            <div th:if="${#lists.isEmpty(questionlist)}">
-                                <center style="color: grey;">No Question posted yet.</center>
+                            <div th:if="${#lists.isEmpty(allMyQuestions)}">
+                                <center style="color: grey;">No Questions from me posted yet.</center>
                             </div>
 
                             <div>
                                 <ul id="filter-ul-list" class="search-question-list" style="list-style-type: none; padding: 0; margin:0;">
-                                    <li th:if="${not #lists.isEmpty(questionlist)}" th:each="question: ${questionlist}">
+                                    <li th:if="${not #lists.isEmpty(allMyQuestions)}" th:each="question: ${allMyQuestions}">
                                         <div class="card bg-secondary mb-5 my-custom-shadow-box">
                                             <div class="card-body">
                                                 <div class="row">
                                                     <div class="col-1">
                                                         <div class="center">
-                                                            <a class="voting-arrow" th:href="@{/search-question/upvote-post?id={id}(id=${question.post_id})}"><span>&#9650;</span></a>
+                                                            <a class="voting-arrow" th:href="@{/search-my-questions/upvote-post?id={id}(id=${question.post_id})}"><span>&#9650;</span></a>
                                                             <span th:text="${question.upvoted_from_users.size()} - ${question.downvoted_from_users.size()}" style="text-align:center;"></span>
-                                                            <a class="voting-arrow" th:href="@{/search-question/downvote-post?id={id}(id=${question.post_id})}"><span>&#9660;</span></a>
+                                                            <a class="voting-arrow" th:href="@{/search-my-questions/downvote-post?id={id}(id=${question.post_id})}"><span>&#9660;</span></a>
                                                         </div>
                                                     </div>
                                                     <div class="col-9">

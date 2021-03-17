@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Search for my Answers</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://resources.ctsapprentice.ch/css/main/bootstrap.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <link rel="icon" href="https://resources.ctsapprentice.ch/images/icon/cts.ico"/>
+
+    <!--custom stylsheet-->
+    <link rel="stylesheet" href="/css/mystyles.css">
+</head>
+<body>
+
+<!--responsive navbar-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!--logo-->
+    <a class="navbar-brand" href="home">Apprentice Forum</a>
+    <!--hamburger menu-->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02"
+            aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!--links-->
+    <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="home">Home</a>
+            </li>
+            <li class="nav-item active dropdown">
+                <a class="nav-link dropdown-toggle" href="forum" id="forumdropdown" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Forum
+                </a>
+                <div class="dropdown-menu" aria-labelledby="forumdropdown">
+                    <a class="dropdown-item" href="forum">Overview</a>
+                    <a class="dropdown-item" href="ask-question">Ask new question</a>
+                </div>
+            </li>
+            <li class="nav-item active dropdown">
+                <a th:text="${logged_in_user.firstname + ' ' + logged_in_user.lastname}" class="nav-link dropdown-toggle" href="edit-user" id="myaccountdropdown" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                </a>
+                <div class="dropdown-menu" aria-labelledby="myaccountdropdown">
+                    <a class="dropdown-item" href="edit-user">Edit</a>
+                    <a class="dropdown-item" href="register">Register</a>
+                    <a class="dropdown-item" data-toggle="modal" data-target="#myModal" href="">Logout</a>
+                </div>
+
+                <!--modal for logout confirmation-->
+                <div class="modal" id="myModal" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Logout</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to logout?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <form th:action="@{/logout}" method="post">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Yes</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!--content (form for asking a question)-->
+<section id="card" class="py-2">
+    <div class="container aos-init aos-animate" data-aos="fade-right">
+        <div class="row my-3">
+            <div class="col">
+                <center>
+
+                    <!--switch between the two lists using tabs-->
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link show active" data-toggle="tab" href="#discussions">Discussions with my answer</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link show" data-toggle="tab" href="#answers">All my answers</a>
+                        </li>
+                    </ul>
+
+
+                    <!--tab contents--->
+                    <div id="myTabContent" class="tab-content">
+
+                        <!--first tab-->
+                        <div class="tab-pane fade active show" id="discussions">
+                            <div class="card bg-secondary mb-1">
+                                <div class="card-body">
+                                    <h4 class="card-title" style="text-transform: uppercase;">Search for my questions</h4>
+
+                                    <label class="col-form-label" for="inputSearch">Search for question I've asked</label>
+                                    <input id="inputSearch" type="text" class="form-control" placeholder="Search keywords in discussion with my answer" onkeyup="searchQuestion()" style="margin-bottom: 20px;">
+
+                                    <!--in case the post table in the database is empty-->
+                                    <div th:if="${#lists.isEmpty(allQuestionsWithMyAnswer)}">
+                                        <center style="color: grey;">No Questions from me posted yet.</center>
+                                    </div>
+
+                                    <div>
+                                        <ul id="filter-ul-list" class="search-question-list" style="list-style-type: none; padding: 0; margin:0;">
+                                            <li th:if="${not #lists.isEmpty(allQuestionsWithMyAnswer)}" th:each="question: ${allQuestionsWithMyAnswer}">
+                                                <div class="card bg-secondary mb-5 my-custom-shadow-box">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-1">
+                                                                <div class="center">
+                                                                    <a class="voting-arrow" th:href="@{/search-my-answers/upvote-post?id={id}(id=${question.post_id})}"><span>&#9650;</span></a>
+                                                                    <span th:text="${question.upvoted_from_users.size()} - ${question.downvoted_from_users.size()}" style="text-align:center;"></span>
+                                                                    <a class="voting-arrow" th:href="@{/search-my-answers/downvote-post?id={id}(id=${question.post_id})}"><span>&#9660;</span></a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <div>
+                                                                    <small class="text-muted" th:text="${'Posted on the ' + question.date_posted + ' from ' + question.posted_from_user.firstname + ' ' + question.posted_from_user.lastname}"></small>
+                                                                    <h4 id="search-result-candidate" class="card-title" th:text="${question.title}"></h4>
+                                                                    <p class="card-text" th:text="${question.content}"></p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-2">
+                                                                <a class="btn btn-primary btn-sm" th:href="@{/view-discussion?id={id}(id=${question.post_id})}">View</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--second tab-->
+                        <div class="tab-pane fade" id="answers">
+                            <div class="card bg-secondary mb-1">
+                                <div class="card-body">
+                                    <h4 class="card-title" style="text-transform: uppercase;">Search for my answers</h4>
+
+                                    <label class="col-form-label" for="inputSearch2">Search for any answer I've posted</label>
+                                    <input id="inputSearch2" type="text" class="form-control" placeholder="Search keywords in my answers" onkeyup="searchAnswer()" style="margin-bottom: 20px;">
+
+                                    <!--in case the post table in the database is empty-->
+                                    <div th:if="${#lists.isEmpty(allMyAnswers)}">
+                                        <center style="color: grey;">No Questions from me posted yet.</center>
+                                    </div>
+
+                                    <div>
+                                        <ul id="filter-ul-list2" class="search-question-list" style="list-style-type: none; padding: 0; margin:0;">
+                                            <li th:if="${not #lists.isEmpty(allMyAnswers)}" th:each="answer: ${allMyAnswers}">
+                                                <div class="card bg-secondary mb-5 my-custom-shadow-box">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-1">
+                                                                <div class="center">
+                                                                    <a class="voting-arrow" th:href="@{/search-my-answers/upvote-post?id={id}(id=${answer.post_id})}"><span>&#9650;</span></a>
+                                                                    <span th:text="${answer.upvoted_from_users.size()} - ${answer.downvoted_from_users.size()}" style="text-align:center;"></span>
+                                                                    <a class="voting-arrow" th:href="@{/search-my-answers/downvote-post?id={id}(id=${answer.post_id})}"><span>&#9660;</span></a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <div>
+                                                                    <small class="text-muted" th:text="${'Posted on the ' + answer.date_posted + ' from ' + answer.posted_from_user.firstname + ' ' + answer.posted_from_user.lastname}"></small>
+                                                                    <p id="search-result-candidate2" class="card-text" th:text="${answer.content}"></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </center>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript" src="/js/filter-questions.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+</body>
+</html>

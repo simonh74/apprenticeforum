@@ -371,6 +371,91 @@ public class ForumController
         return "redirect:/search-question";
     }
 
+    @GetMapping("/search-my-questions/upvote-post")
+    public String upvotePostFromSearchMyQuestionsPage(@RequestParam(name="id", required = true) int id, Model model) {
+        //upvote post
+        upvotePost(id);
+
+        return "redirect:/view-all-my-questions";
+    }
+
+    @GetMapping("/search-my-questions/downvote-post")
+    public String downvotePostFromSearchMyQuestionsPage(@RequestParam(name="id", required = true) int id, Model model) {
+        //downvote post
+        downvotePost(id);
+
+        return "redirect:/view-all-my-questions";
+    }
+
+    @GetMapping("/search-my-answers/upvote-post")
+    public String upvotePostFromSearchMyAnswersPage(@RequestParam(name="id", required = true) int id, Model model) {
+        //upvote post
+        upvotePost(id);
+
+        return "redirect:/view-all-my-answers";
+    }
+
+    @GetMapping("/search-my-answers/downvote-post")
+    public String downvotePostFromSearchMyAnswersPage(@RequestParam(name="id", required = true) int id, Model model) {
+        //downvote post
+        downvotePost(id);
+
+        return "redirect:/view-all-my-answers";
+    }
+
+    @GetMapping("/view-all-my-questions")
+    public String showAllMyQuestionsPage(Model model) {
+        //get a list of all my question posts
+        User logged_in_user = getCurrentlyLoggedInUser();
+        List<Question> allMyQuestions = new ArrayList<>();
+        for(Post postitr : logged_in_user.getUserListOfPosts()) {
+            if(postitr instanceof Question) {
+                allMyQuestions.add((Question) postitr);
+            }
+        }
+
+        //pass the list of all my question
+        model.addAttribute("allMyQuestions", allMyQuestions);
+
+        //for showing the name in the navbar only
+        model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
+        return "view-all-my-asked-questions";
+    }
+
+    @GetMapping("/view-all-my-answers")
+    public String showAllDiscussionWithMyAnswer(Model model) {
+        //get a list of all my answer posts
+        User logged_in_user = getCurrentlyLoggedInUser();
+        List<Answer> allMyAnswers = new ArrayList<>();
+        for(Post postitr : logged_in_user.getUserListOfPosts()) {
+            if(postitr instanceof Answer) {
+                allMyAnswers.add((Answer) postitr);
+            }
+        }
+
+        //get a second list of the discussions with my answer in it
+        List<Question> allQuestionsWithMyAnswer = new ArrayList<>();
+        for(Answer answeritr : allMyAnswers) {
+            Discussion discussionWithTheAnswer = answeritr.getPosted_in_discussion();
+            Question questionOfDiscussion = getQuestionOfDiscussion(discussionWithTheAnswer);
+            if(!allQuestionsWithMyAnswer.contains(questionOfDiscussion)) {
+                allQuestionsWithMyAnswer.add(questionOfDiscussion);
+            }
+        }
+
+        //pass the list of all my discussions with answers (aka. all my answer posts)
+        model.addAttribute("allMyAnswers", allMyAnswers);
+
+        //pass second list with all the discussion with my answer in it
+        model.addAttribute("allQuestionsWithMyAnswer", allQuestionsWithMyAnswer);
+
+        //for showing the name in the navbar only
+        model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
+        return "view-all-discussions-with-my-answer";
+    }
+
     private User getCurrentlyLoggedInUser() {
         //get current logged in user
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
