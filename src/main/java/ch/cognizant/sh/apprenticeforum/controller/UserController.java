@@ -4,8 +4,11 @@ import ch.cognizant.sh.apprenticeforum.model.RegisterUser;
 import ch.cognizant.sh.apprenticeforum.model.User;
 import ch.cognizant.sh.apprenticeforum.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.security.SecureRandom;
 
 @Controller
 public class UserController {
@@ -64,6 +68,40 @@ public class UserController {
         }
     }
 
+    @GetMapping("/edit-user/change-password")
+    public String showChangePasswordPage(Model model) {
+        //get the logged in user and repackage it again into a "registerUser" for validation purposes
+        RegisterUser registerUser_with_editable_psw = new RegisterUser();
+        model.addAttribute("registerUser", registerUser_with_editable_psw);
+
+        return "change-password";
+    }
+
+    @PostMapping("/edit-user/change-password")
+    public String processChangePasswordOfUser(@Valid @ModelAttribute RegisterUser registerUser, BindingResult result, Model model) {
+        if(result.hasFieldErrors("password")) {
+            //in case the new password doesn't match the complexity (min. 8 characters, 1 number, 1 uppercase... etc.)
+            return "change-password";
+        } else if(!registerUser.getPassword().equals(registerUser.getConfirmpassword())) {
+            //in case the the new passwords don't match
+            model.addAttribute("message", "your new password does not match with the confirm password field.");
+            return "change-password";
+        } else if(!passwordEncoder().matches(registerUser.getOldpassword(), getCurrentlyLoggedInUser().getPassword())) {
+            //in case the old password is wrong
+            model.addAttribute("message", "Your old password is invalid");
+            return "change-password";
+        }
+
+        //repackage registerUser back into a user
+        User user_with_changed_psw = getCurrentlyLoggedInUser();
+        user_with_changed_psw.setPassword(passwordEncoder().encode(registerUser.getPassword()));
+
+        //save changes in the database
+        userService.update(user_with_changed_psw.getUser_id(), user_with_changed_psw);
+
+        return "redirect:/forum";
+    }
+
     private User getCurrentlyLoggedInUser() {
         //get current logged in user
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -75,5 +113,12 @@ public class UserController {
             currently_logged_in_user = userService.getByEmail(principal.toString());
         }
         return currently_logged_in_user;
+    }
+
+
+    private PasswordEncoder passwordEncoder() {
+        int strength = 10;
+        //secure random generates a salt.
+        return new BCryptPasswordEncoder(strength, new SecureRandom());
     }
 }

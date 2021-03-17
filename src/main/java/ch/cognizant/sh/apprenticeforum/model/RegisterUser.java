@@ -57,6 +57,10 @@ public class RegisterUser
     @Setter
     public String confirmpassword;
 
+    @Getter
+    @Setter
+    public String oldpassword;
+
     public RegisterUser() {
         super();
     }
