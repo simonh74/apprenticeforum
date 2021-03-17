@@ -167,7 +167,7 @@ public class ForumController
         //get the question object by the id passed in the URL
         Question questionOfDiscussion = questionService.getById(id);
 
-        model.addAttribute("questionOfDiscussion", questionOfDiscussion);
+        model.addAttribute("question", questionOfDiscussion);
         return "edit-question";
     }
 
@@ -221,9 +221,25 @@ public class ForumController
         //get the question by id
         Question questionOfDiscussion = questionService.getById(id);
 
-        //to clean up foreign keys, we need to remove the question from the discussion
+        //get discussion from the question
         Discussion discussionWithTheQuestion = questionOfDiscussion.getPosted_in_discussion();
+
+        //for cleaning up foreign keys, we need to remove upvote/downvote lists of all posts in the discussion
+        for(Post postitr : discussionWithTheQuestion.getDiscussionListOfPosts()) {
+            //remove downvote connections from the post's and from the user's perspective
+            postitr.getDownvoted_from_users().clear();
+            postitr.getPosted_from_user().getDownvoted_posts().clear();
+
+            //remove upvote connections from the post's and from the user's perspective
+            postitr.getUpvoted_from_users().clear();
+            postitr.getPosted_from_user().getUpvoted_posts().clear();
+
+            postService.update((long) postitr.post_id, postitr);
+        }
+
+        //for cleaning up foreign keys, we need to remove the question from the discussion
         discussionWithTheQuestion.getDiscussionListOfPosts().remove(questionOfDiscussion);
+
 
         //delete question from the database
         questionService.deleteById(id);

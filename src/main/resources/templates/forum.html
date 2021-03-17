@@ -130,10 +130,11 @@
                             </div>
                         </div>
                     </div>
-                    <!--in case the list above is empty-->
-                    <div th:if="${#lists.isEmpty(listOfLatestDiscussions)}">
-                        <center style="color: grey;">No Discussions posted yet</center>
-                    </div>
+                </div>
+
+                <!--in case the list above is empty-->
+                <div style="margin-top:50px;" th:if="${#lists.isEmpty(listOfLatestDiscussions)}">
+                    <center style="color: grey;">No Discussions posted yet</center>
                 </div>
             </div>
             <div class="col-3">
