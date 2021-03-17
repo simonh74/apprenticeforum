@@ -96,6 +96,7 @@
                         </div>
                     </div>
                     <div class="col-9">
+                        <small class="text-muted" th:text="${'Posted on the ' + questionOfDiscussion.date_posted + ' from ' + questionOfDiscussion.posted_from_user.firstname + ' ' + questionOfDiscussion.posted_from_user.lastname}"></small>
                         <h4 class="card-title" th:text="${questionOfDiscussion.title}"></h4>
                         <p class="card-text" th:text="${questionOfDiscussion.content}"></p>
                     </div>
@@ -130,6 +131,7 @@
                             </div>
                         </div>
                         <div class="col-9">
+                            <small class="text-muted" th:text="${'Posted on the ' + answer.date_posted + ' from ' + answer.posted_from_user.firstname + ' ' + answer.posted_from_user.lastname}"></small>
                             <p class="card-text" th:text="${answer.content}"></p>
                         </div>
                         <div class="col-2" th:if="${logged_in_user.equals(answer.posted_from_user)}">

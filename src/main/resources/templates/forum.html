@@ -103,6 +103,7 @@
                         </div>
                     </div>
                 </div>
+                <a th:if="${not #lists.isEmpty(listOfMyPostedQuestions)}" href="#">See All</a>
             </div>
             <div class="col-6">
                 <h4>Latest discussions</h4>
@@ -120,6 +121,7 @@
                                     </div>
                                 </div>
                                 <div class="col-9">
+                                    <small class="text-muted" th:text="${'Posted on the ' + question.date_posted + ' from ' + question.posted_from_user.firstname + ' ' + question.posted_from_user.lastname}"></small>
                                     <h4 class="card-title" th:text="${question.title}"></h4>
                                     <p class="card-text" th:text="${question.content}"></p>
                                 </div>
@@ -161,6 +163,7 @@
                         </div>
                     </div>
                 </div>
+                <a th:if="${not #lists.isEmpty(listOfDiscussionsWithMyAnswer)}" href="#">See All</a>
             </div>
         </div>
     </div>

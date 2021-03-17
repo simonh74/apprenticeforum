@@ -112,6 +112,7 @@
                                                     </div>
                                                     <div class="col-9">
                                                         <div>
+                                                            <small class="text-muted" th:text="${'Posted on the ' + question.date_posted + ' from ' + question.posted_from_user.firstname + ' ' + question.posted_from_user.lastname}"></small>
                                                             <h4 id="search-result-candidate" class="card-title" th:text="${question.title}"></h4>
                                                             <p class="card-text" th:text="${question.content}"></p>
                                                         </div>
