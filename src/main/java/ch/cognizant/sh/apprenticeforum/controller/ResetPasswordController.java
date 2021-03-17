@@ -59,7 +59,7 @@ public class ResetPasswordController
 
             //send email to the user with the verification code
             try {
-                emailSenderService.sendEmail(identified_user, new_gen_code);
+                emailSenderService.sendVerificationCode(identified_user, new_gen_code);
             } catch (MailException e) {
                 e.printStackTrace();
             }

@@ -15,7 +15,7 @@ public class UserService implements UserDetailsService
     @Autowired
     UserRepository repository;
 
-    public Iterable<User> getAll(Integer id) {
+    public Iterable<User> getAll() {
         return repository.findAll();
     }
 

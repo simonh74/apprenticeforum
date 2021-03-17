@@ -3,6 +3,7 @@ package ch.cognizant.sh.apprenticeforum.controller;
 import ch.cognizant.sh.apprenticeforum.model.*;
 import ch.cognizant.sh.apprenticeforum.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -36,6 +37,9 @@ public class ForumController
 
     @Autowired
     public PostService postService;
+
+    @Autowired
+    public EmailSenderService emailSenderService;
 
 
     @GetMapping("/forum")
@@ -102,6 +106,13 @@ public class ForumController
 
             //add question to the database incl. foreign keys for user and discussion
             questionService.add(question);
+
+            //send email to everyone, that a new question has been posted
+            try {
+                emailSenderService.sendNewQuestionNotificationToEveryone(loggedin_user, question.getTitle());
+            } catch (MailException e) {
+                e.printStackTrace();
+            }
 
             return "redirect:/forum";
         }

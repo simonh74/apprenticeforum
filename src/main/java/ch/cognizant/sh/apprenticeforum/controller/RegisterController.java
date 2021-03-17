@@ -81,7 +81,7 @@ public class RegisterController
 
                 //send email
                 try {
-                    emailSenderService.sendEmail(new_user, ver_code);
+                    emailSenderService.sendVerificationCode(new_user, ver_code);
                 } catch (MailException e) {
                     e.printStackTrace();
                 }
