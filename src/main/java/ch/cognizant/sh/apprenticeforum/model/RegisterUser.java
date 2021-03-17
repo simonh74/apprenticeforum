@@ -2,12 +2,9 @@ package ch.cognizant.sh.apprenticeforum.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
 
-import javax.persistence.Lob;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
-import java.sql.Date;
 
 public class RegisterUser
 {

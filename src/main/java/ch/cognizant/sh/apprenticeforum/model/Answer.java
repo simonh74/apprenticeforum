@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "answer")
@@ -22,7 +23,8 @@ public class Answer extends Post
 
     @Getter
     @Setter
-    @Column(name = "content", columnDefinition = "VARCHAR(10000)")
+    @Size(min=10, max=255, message = "Length of content must be between 10 and a 255 characters.")
+    @Column(name = "content")
     public String content;
 
     public Answer() {
