@@ -18,11 +18,6 @@ public class LoginLogoutController
         return "login";
     }
 
-    @RequestMapping("/logout")
-    public String logout(Model model) {
-        return "logout";
-    }
-
     @GetMapping("/login-error")
     public String errorLogin(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);

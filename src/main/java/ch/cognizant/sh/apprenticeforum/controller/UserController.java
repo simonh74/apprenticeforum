@@ -4,7 +4,6 @@ import ch.cognizant.sh.apprenticeforum.model.RegisterUser;
 import ch.cognizant.sh.apprenticeforum.model.User;
 import ch.cognizant.sh.apprenticeforum.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -41,6 +40,9 @@ public class UserController {
         //pass the register user to the model to populate the fields
         model.addAttribute("registerUser", editable_user);
 
+        //for showing the name in the navbar only
+        model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
         return "edit-account";
     }
 
@@ -49,6 +51,9 @@ public class UserController {
         //check for validation errors in the form
         if(result.hasFieldErrors("cognizantid") || result.hasFieldErrors("email") ||
             result.hasFieldErrors("firstname") || result.hasFieldErrors("lastname")) {
+
+            //for showing the name in the navbar only
+            model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
 
             return "edit-account";
         } else {
@@ -74,6 +79,9 @@ public class UserController {
         RegisterUser registerUser_with_editable_psw = new RegisterUser();
         model.addAttribute("registerUser", registerUser_with_editable_psw);
 
+        //for showing the name in the navbar only
+        model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
         return "change-password";
     }
 
@@ -81,14 +89,26 @@ public class UserController {
     public String processChangePasswordOfUser(@Valid @ModelAttribute RegisterUser registerUser, BindingResult result, Model model) {
         if(result.hasFieldErrors("password")) {
             //in case the new password doesn't match the complexity (min. 8 characters, 1 number, 1 uppercase... etc.)
+
+            //for showing the name in the navbar only
+            model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
             return "change-password";
         } else if(!registerUser.getPassword().equals(registerUser.getConfirmpassword())) {
             //in case the the new passwords don't match
             model.addAttribute("message", "your new password does not match with the confirm password field.");
+
+            //for showing the name in the navbar only
+            model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
             return "change-password";
         } else if(!passwordEncoder().matches(registerUser.getOldpassword(), getCurrentlyLoggedInUser().getPassword())) {
             //in case the old password is wrong
             model.addAttribute("message", "Your old password is invalid");
+
+            //for showing the name in the navbar only
+            model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
             return "change-password";
         }
 

@@ -38,9 +38,8 @@
                 </div>
             </li>
             <li class="nav-item active dropdown">
-                <a class="nav-link dropdown-toggle" href="edit-user" id="myaccountdropdown" role="button"
+                <a th:text="${logged_in_user.firstname + ' ' + logged_in_user.lastname}" class="nav-link dropdown-toggle" href="edit-user" id="myaccountdropdown" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    My Account
                 </a>
                 <div class="dropdown-menu" aria-labelledby="myaccountdropdown">
                     <a class="dropdown-item" href="edit-user">Edit</a>

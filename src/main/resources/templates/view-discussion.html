@@ -41,9 +41,8 @@
                 </div>
             </li>
             <li class="nav-item active dropdown">
-                <a class="nav-link dropdown-toggle" href="edit-user" id="myaccountdropdown" role="button"
+                <a th:text="${logged_in_user.firstname + ' ' + logged_in_user.lastname}" class="nav-link dropdown-toggle" href="edit-user" id="myaccountdropdown" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    My Account
                 </a>
                 <div class="dropdown-menu" aria-labelledby="myaccountdropdown">
                     <a class="dropdown-item" href="edit-user">Edit</a>
@@ -100,7 +99,7 @@
                         <h4 class="card-title" th:text="${questionOfDiscussion.title}"></h4>
                         <p class="card-text" th:text="${questionOfDiscussion.content}"></p>
                     </div>
-                    <div class="col-2" th:if="${loggedInUser.equals(questionOfDiscussion.posted_from_user)}">
+                    <div class="col-2" th:if="${logged_in_user.equals(questionOfDiscussion.posted_from_user)}">
                         <a th:href="@{/edit-question?id={id}(id=${questionOfDiscussion.post_id})}" class="btn btn-warning btn-sm" style="margin:5px 5px 5px 0px;">Edit</a>
                         <a th:href="@{/delete-question?id={id}(id=${questionOfDiscussion.post_id})}" class="btn btn-danger btn-sm">Delete</a>
                     </div>
@@ -133,7 +132,7 @@
                         <div class="col-9">
                             <p class="card-text" th:text="${answer.content}"></p>
                         </div>
-                        <div class="col-2" th:if="${loggedInUser.equals(answer.posted_from_user)}">
+                        <div class="col-2" th:if="${logged_in_user.equals(answer.posted_from_user)}">
                             <a th:href="@{/edit-answer?id={id}(id=${answer.post_id})}" class="btn btn-warning btn-sm" style="margin:5px 5px 5px 0px;">Edit</a>
                             <a th:href="@{/delete-answer?id={id}(id=${answer.post_id})}" class="btn btn-danger btn-sm">Delete</a>
                         </div>

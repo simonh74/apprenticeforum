@@ -50,12 +50,18 @@ public class ForumController
         model.addAttribute("listOfLatestDiscussions", latest_questions);
         model.addAttribute("listOfMyPostedQuestions", my_posted_questions);
         model.addAttribute("listOfDiscussionsWithMyAnswer", discussions_with_my_answer);
+
+        model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
         return "forum";
     }
 
     @GetMapping("/ask-question")
     public String showAskNewQuestionPage(Model model) {
         model.addAttribute("question", new Question());
+
+        //for showing the name in the navbar only
+        model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
         return "ask-question";
     }
 
@@ -64,6 +70,9 @@ public class ForumController
     {
         //check if the form as any validation errors
         if(result.hasErrors()) {
+            //for showing the name in the navbar only
+            model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
             return "ask-question";
         } else {
             //first we create the new discussion entity
@@ -103,6 +112,9 @@ public class ForumController
         //here we are creating a answer and attach it to the list of posts of the discussion
         //check if the form as any validation errors
         if(result.hasErrors()) {
+            //for showing the name in the navbar only
+            model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
             return "view-discussion";
         }
         else {
@@ -157,7 +169,7 @@ public class ForumController
         model.addAttribute("listOfAnswers", listOfAnswers);
 
         //add logged in user to the model -> to show edit and delete button if the logged in user equals the author of the post
-        model.addAttribute("loggedInUser", getCurrentlyLoggedInUser());
+        model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
 
         return "view-discussion";
     }
@@ -168,6 +180,10 @@ public class ForumController
         Question questionOfDiscussion = questionService.getById(id);
 
         model.addAttribute("question", questionOfDiscussion);
+
+        //for showing the name in the navbar only
+        model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
         return "edit-question";
     }
 
@@ -175,6 +191,9 @@ public class ForumController
     public String processEditQuestion(@Valid @ModelAttribute Question question, BindingResult result, Model model) {
         //check if the form as any validation errors
         if(result.hasErrors()) {
+            //for showing the name in the navbar only
+            model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
             return "edit-question";
         } else {
             //update the question in the database
@@ -196,6 +215,10 @@ public class ForumController
 
         model.addAttribute("answer", answerOfDiscussion);
         model.addAttribute("questionOfDiscussion", questionOfDiscussion);
+
+        //for showing the name in the navbar only
+        model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
         return "edit-answer";
     }
 
@@ -203,6 +226,9 @@ public class ForumController
     public String processEditAnswer(@Valid @ModelAttribute Answer answer, BindingResult result, Model model) {
         //check if the form as any validation errors
         if(result.hasErrors()) {
+            //for showing the name in the navbar only
+            model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
+
             return "edit-answer";
         } else {
             //update the answer in the database
@@ -282,6 +308,9 @@ public class ForumController
             }
         }
         model.addAttribute("questionlist", allQuestionsFromDb);
+
+        //for showing the name in the navbar only
+        model.addAttribute("logged_in_user", getCurrentlyLoggedInUser());
 
         return "search-question";
     }
