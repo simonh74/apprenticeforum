@@ -10,12 +10,14 @@ Fachgebiete:
 
 Mittel und Methoden
 ---------------------
--Java
--Springboot
-- Javascript
--Thymeleaf
--HTML
--Bootstrap
+* Java
+* Springboot
+* Javascript
+* Thymeleaf
+* HTML
+* Bootstrap
+* Maven
+* MVC (Model View Control Architecture)
 
 Über die Webanwendung:
 -----------------------
